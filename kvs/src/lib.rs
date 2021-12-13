@@ -1,29 +1,37 @@
 use std::collections::HashMap;
 
+/// The `KvStore` stores string key/value pairs.
+///
+/// Key/value pairs are stored in a `HashMap` in memory and not persisted to disk.
+///
+/// Example:
+///
+/// ```rust
+/// # use kvs::KvStore;
+/// let mut store = KvStore::new();
+/// store.set("key".to_owned(), "value".to_owned());
+/// let val = store.get("key".to_owned());
+/// assert_eq!(val, Some("value".to_owned()));
+/// ```
+#[derive(Default)]
 pub struct KvStore {
     map: HashMap<String, String>,
 }
 
 impl KvStore {
     pub fn new() -> KvStore {
-        panic!();
+        KvStore::default()
     }
 
     pub fn set(&mut self, key: String, val: String) {
-        panic!();
+        self.map.insert(key, val);
     }
 
     pub fn get(&self, key: String) -> Option<String> {
-        panic!();
+        self.map.get(&key).cloned()
     }
 
-    pub fn remove(&mut self, key: String) -> KvStore {
-        panic!();
-    }
-}
-
-impl Default for KvStore {
-    fn default() -> Self {
-        Self::new()
+    pub fn remove(&mut self, key: String) {
+        self.map.remove(&key);
     }
 }
