@@ -1,4 +1,7 @@
 use std::collections::HashMap;
+use std::option::Option;
+use std::fmt::Display;
+use std::path::Path;
 
 /// The `KvStore` stores string key/value pairs.
 ///
@@ -18,20 +21,32 @@ pub struct KvStore {
     map: HashMap<String, String>,
 }
 
+#[derive(Debug)]
+pub enum KvsError {
+    KeyError(String),
+    ValueError(String),
+}
+
+pub type Result<T> = std::result::Result<T, KvsError>;
+
 impl KvStore {
     pub fn new() -> KvStore {
         KvStore::default()
     }
 
-    pub fn set(&mut self, key: String, val: String) {
-        self.map.insert(key, val);
+    pub fn open(path: &Path) -> Result<KvStore> {
+        Ok(KvStore::new())
     }
 
-    pub fn get(&self, key: String) -> Option<String> {
-        self.map.get(&key).cloned()
+    pub fn set(&mut self, key: String, val: String) -> Result<()>  {
+        panic!("not implemented")
     }
 
-    pub fn remove(&mut self, key: String) {
-        self.map.remove(&key);
+    pub fn get(&self, key: String) -> Result<Option<String>> {
+        Ok(Some("abc".into()))
+    }
+
+    pub fn remove(&mut self, key: String) -> Result<()>  {
+        Ok(())
     }
 }
