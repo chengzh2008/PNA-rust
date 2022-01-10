@@ -1,5 +1,6 @@
 use clap::arg_enum;
 use kvs::Result;
+use kvs::{KvStore, KvsEngine, SledStore};
 use log::{error, info, warn, LevelFilter};
 use std::env::current_dir;
 use std::net::SocketAddr;
@@ -66,6 +67,13 @@ fn run(opt: Opt) -> Result<()> {
     info!("Listening on {}", opt.addr);
     std::fs::write(current_dir()?.join("engine"), format!("{}", engine))?;
 
+    match engine {
+        Engine::kvs => run_with_engine(KvStore::open(current_dir()?)?, opt.addr),
+        Engine::sled => run_with_engine(SledStore::new(sled::open(current_dir()?)?), opt.addr),
+    }
+}
+
+fn run_with_engine<E: KvsEngine>(engine: E, addr: SocketAddr) -> Result<()> {
     Ok(())
 }
 
