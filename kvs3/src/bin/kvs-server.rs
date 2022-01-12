@@ -1,6 +1,6 @@
 use clap::arg_enum;
 use kvs::Result;
-use kvs::{KvStore, KvsEngine, SledStore};
+use kvs::{KvStore, KvsEngine, KvsServer, SledStore};
 use log::{error, info, warn, LevelFilter};
 use std::env::current_dir;
 use std::net::SocketAddr;
@@ -74,7 +74,8 @@ fn run(opt: Opt) -> Result<()> {
 }
 
 fn run_with_engine<E: KvsEngine>(engine: E, addr: SocketAddr) -> Result<()> {
-    Ok(())
+    let server = KvsServer::new(engine);
+    server.run(addr)
 }
 
 fn current_engine() -> Result<Option<Engine>> {
