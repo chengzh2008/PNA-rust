@@ -1,5 +1,6 @@
 use failure::Fail;
 use std::io;
+use std::string::FromUtf8Error;
 
 #[derive(Fail, Debug)]
 pub enum KvsError {
@@ -13,6 +14,8 @@ pub enum KvsError {
     UnexpectedCommandErr,
     #[fail(display = "Sled err")]
     SledErr(sled::Error),
+    #[fail(display = "utf8 conversion error")]
+    Utf8Err,
 }
 
 pub type Result<T> = std::result::Result<T, KvsError>;
@@ -32,5 +35,11 @@ impl From<serde_json::Error> for KvsError {
 impl From<sled::Error> for KvsError {
     fn from(err: sled::Error) -> KvsError {
         KvsError::SledErr(err)
+    }
+}
+
+impl From<FromUtf8Error> for KvsError {
+    fn from(err: FromUtf8Error) -> KvsError {
+        KvsError::Utf8Err
     }
 }
