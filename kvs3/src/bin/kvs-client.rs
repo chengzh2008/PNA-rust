@@ -1,5 +1,5 @@
 use clap::AppSettings;
-use kvs::Result;
+use kvs::{KvsClient, Result};
 use std::net::SocketAddr;
 use std::process::exit;
 use structopt::StructOpt;
@@ -75,6 +75,23 @@ fn main() {
 }
 
 fn run(opt: Opt) -> Result<()> {
-    println!("{:?}", opt);
+    match opt.command {
+        Command::Get { key, addr } => {
+            let mut client = KvsClient::connect(addr)?;
+            if let Some(value) = client.get(key)? {
+                println!("{}", value);
+            } else {
+                println!("Key not found");
+            }
+        }
+        Command::Set { key, value, addr } => {
+            let mut client = KvsClient::connect(addr)?;
+            client.set(key, value)?;
+        }
+        Command::Remove { key, addr } => {
+            let mut client = KvsClient::connect(addr)?;
+            client.remove(key)?;
+        }
+    }
     Ok(())
 }
