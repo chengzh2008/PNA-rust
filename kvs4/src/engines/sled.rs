@@ -14,14 +14,14 @@ impl SledStore {
 }
 
 impl KvsEngine for SledStore {
-    fn set(&mut self, key: String, value: String) -> Result<()> {
+    fn set(&self, key: String, value: String) -> Result<()> {
         let tree: &Tree = &self.db;
         tree.insert(key, value.into_bytes()).map(|_| ())?;
         self.db.flush()?;
         Ok(())
     }
 
-    fn get(&mut self, key: String) -> Result<Option<String>> {
+    fn get(&self, key: String) -> Result<Option<String>> {
         let tree: &Tree = &self.db;
         let r = tree
             .get(key)?
@@ -31,7 +31,7 @@ impl KvsEngine for SledStore {
         Ok(r)
     }
 
-    fn remove(&mut self, key: String) -> Result<()> {
+    fn remove(&self, key: String) -> Result<()> {
         let tree: &Tree = &self.db;
         tree.remove(key)?.ok_or(KvsError::KeyNotFound)?;
         tree.flush()?;
